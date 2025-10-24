@@ -60,7 +60,11 @@ async function loadAds() {
 
 // Hirdetések megjelenítése a galéria területen
 function renderAds(ads) {
+    console.log('renderAds called with:', ads);
+    console.log('ads length:', ads ? ads.length : 'undefined');
+    
     if (!ads || ads.length === 0) {
+        console.log('No ads to render');
         gallery.innerHTML = `
             <div class="no-ads">
                 📭 Még nincsenek hirdetések. Legyen Ön az első!
@@ -68,6 +72,8 @@ function renderAds(ads) {
         `;
         return;
     }
+    
+    console.log('Rendering', ads.length, 'ads');
     
     const adsHtml = ads.map(ad => {
         // Kép URL kezelése (thumbnail_url vagy image_url)
@@ -115,7 +121,10 @@ function renderAds(ads) {
         `;
     }).join('');
     
+    console.log('Generated HTML length:', adsHtml.length);
+    console.log('Gallery element:', gallery);
     gallery.innerHTML = adsHtml;
+    console.log('Gallery updated successfully');
 }
 
 // HTML escape segédfüggvény (XSS védelem)
