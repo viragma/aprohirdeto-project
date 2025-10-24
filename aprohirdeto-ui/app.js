@@ -1,7 +1,7 @@
 // API konfiguráció
 const API_BASE_URL = 'http://beadando-lb-555305300.eu-central-1.elb.amazonaws.com';
 
-console.log('🐖 FALUSI SZAR PIAC - JavaScript betöltve!');
+console.log('🐖 FALUSI PORTÉKA PIAC - JavaScript betöltve!');
 
 // DOM elemek
 const adForm = document.getElementById('ad-form');
@@ -23,7 +23,7 @@ console.log('DOM elemek:', {
 function showError(message) {
     console.error('HIBA:', message);
     if (errorMessage) {
-        errorMessage.textContent = `🐖 A fene egye meg! ${message}`;
+        errorMessage.textContent = `🐖 Jaj de bosszantó! ${message}`;
         errorMessage.style.display = 'block';
         if (successMessage) successMessage.style.display = 'none';
         
@@ -37,7 +37,7 @@ function showError(message) {
 function showSuccess(message) {
     console.log('SIKER:', message);
     if (successMessage) {
-        successMessage.textContent = `🌾 Szuper, te paraszt! ${message}`;
+        successMessage.textContent = `🌾 Hát ez aztán remek, öregem! ${message}`;
         successMessage.style.display = 'block';
         if (errorMessage) errorMessage.style.display = 'none';
         
@@ -58,7 +58,7 @@ async function loadAds() {
     
     try {
         // Betöltő üzenet
-        gallery.innerHTML = '<div class="loading">🐄 Töltjük a szarokat, várj, te paraszt...</div>';
+        gallery.innerHTML = '<div class="loading">🐄 Várj csak, öregem, összeszedjük a holmikat...</div>';
         
         console.log('API hívás indítása:', `${API_BASE_URL}/api/ads`);
         
@@ -103,14 +103,14 @@ async function loadAds() {
         if (gallery) {
             gallery.innerHTML = `
                 <div class="no-ads">
-                    🐄 Szörnyű szar! Nem lehet betölteni a hirdetéseket!<br>
+                    🐄 Ejnye-bejnye! Nem tudjuk betölteni a portékákat!<br>
                     Hiba: ${error.message}<br>
-                    <small>Próbáld újra, te hülye paraszt!</small>
+                    <small>Próbáld újra, komám!</small>
                 </div>
             `;
         }
         
-        showError(`Nem lehet betölteni a szarokat: ${error.message}`);
+        showError(`Nem tudtuk összeszedni a holmikat: ${error.message}`);
     }
 }
 
@@ -128,7 +128,7 @@ function renderAds(ads) {
         console.warn('Ads param null vagy undefined');
         gallery.innerHTML = `
             <div class="no-ads">
-                🌾 Nincs adat a szerverről, te paraszt!
+                🌾 Nincs adat a szerverről, komám!
             </div>
         `;
         return;
@@ -138,7 +138,7 @@ function renderAds(ads) {
         console.warn('Ads nem array:', typeof ads);
         gallery.innerHTML = `
             <div class="no-ads">
-                🐖 A szerver szar adatot küldött (nem lista)!
+                🐖 A szerver furcsa adatot küldött (nem lista)!
             </div>
         `;
         return;
@@ -148,7 +148,7 @@ function renderAds(ads) {
         console.log('Üres ads array');
         gallery.innerHTML = `
             <div class="no-ads">
-                🌾 Még senki sem árul szart! Te lehetsz az első paraszt!
+                🌾 Még senki sem kínál portékát! Te lehetsz az első tanyasi!
             </div>
         `;
         return;
@@ -183,13 +183,13 @@ function renderAds(ads) {
             return `
                 <div class="ad-card">
                     ${imageHtml}
-                    <h3>🌾 ${escapeHtml(ad.ad_title || 'Névtelen szar')}</h3>
+                    <h3>🌾 ${escapeHtml(ad.ad_title || 'Névtelen portéka')}</h3>
                     ${ad.price ? `<p class="price">💰 ${escapeHtml(ad.price)}</p>` : ''}
-                    <p><strong>🤠 Paraszt neve:</strong> ${escapeHtml(ad.seller_name || 'Ismeretlen gazda')}</p>
-                    ${ad.ad_text ? `<p><strong>📝 Milyen szar ez:</strong> ${escapeHtml(ad.ad_text)}</p>` : ''}
-                    ${ad.email ? `<p><strong>📧 Email szar:</strong> ${escapeHtml(ad.email)}</p>` : ''}
-                    ${ad.phone ? `<p><strong>📞 Telefon szar:</strong> ${escapeHtml(ad.phone)}</p>` : ''}
-                    <p><small>🕐 Feladva: ${ad.created_at ? new Date(ad.created_at).toLocaleString('hu-HU') : 'Ismeretlen'}</small></p>
+                    <p><strong>🤠 Tanyasi neve:</strong> ${escapeHtml(ad.seller_name || 'Ismeretlen gazda')}</p>
+                    ${ad.ad_text ? `<p><strong>📝 Micsoda ez:</strong> ${escapeHtml(ad.ad_text)}</p>` : ''}
+                    ${ad.email ? `<p><strong>📧 Elektronikus levél:</strong> ${escapeHtml(ad.email)}</p>` : ''}
+                    ${ad.phone ? `<p><strong>📞 Telefonos elérés:</strong> ${escapeHtml(ad.phone)}</p>` : ''}
+                    <p><small>🕐 Feltéve: ${ad.created_at ? new Date(ad.created_at).toLocaleString('hu-HU') : 'Ismeretlen időben'}</small></p>
                 </div>
             `;
         }).join('');
@@ -230,13 +230,11 @@ if (adForm) {
         console.log('🐖 Űrlap elküldése...');
         
         try {
-            // Gomb letiltása
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = '🐄 Feltöltjük a szarodat...';
-            }
-            
-            // Üzenetek elrejtése
+        // Gomb letiltása
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🐄 Felrakjuk a portékádat...';
+        }            // Üzenetek elrejtése
             if (errorMessage) errorMessage.style.display = 'none';
             if (successMessage) successMessage.style.display = 'none';
             
@@ -257,11 +255,11 @@ if (adForm) {
             const sellerName = formData.get('seller_name');
             
             if (!adTitle || !adTitle.trim()) {
-                throw new Error('Írd már be, milyen szart akarsz eladni, te hülye!');
+                throw new Error('Írd már be, mifajta portékát akarsz kínálni, öregem!');
             }
             
             if (!sellerName || !sellerName.trim()) {
-                throw new Error('Írd be a nevedet, te paraszt!');
+                throw new Error('Add meg a nevedet, komám!');
             }
             
             console.log('API POST kérés indítása...');
@@ -288,7 +286,7 @@ if (adForm) {
             const result = await response.json();
             console.log('Sikeres hirdetés feladás:', result);
             
-            showSuccess('A szarodat sikeresen felraktuk! Most már láthatják a többi parasztok is!');
+            showSuccess('A portékádat sikeresen felraktuk! Most már láthatják a többi tanyasiak is!');
             
             // Űrlap kiürítése
             adForm.reset();
@@ -305,7 +303,7 @@ if (adForm) {
             // Gomb visszaállítása
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🐖 Fel a szarral!';
+                submitBtn.textContent = '🐖 Fel a portékával!';
             }
         }
     });
@@ -324,13 +322,13 @@ if (imageInput) {
             
             const maxSize = 5 * 1024 * 1024; // 5MB
             if (file.size > maxSize) {
-                showError('Ez a kép túl nagy szar! Maximum 5MB lehet, te hülye!');
+                showError('Ez a fénykép túl nagy! Maximum 5MB lehet, öregem!');
                 imageInput.value = '';
                 return;
             }
             
             if (!file.type.startsWith('image/')) {
-                showError('Csak képet tölts fel, ne valami más szart!');
+                showError('Csak fényképet tölts fel, komám!');
                 imageInput.value = '';
                 return;
             }
@@ -344,13 +342,13 @@ if (imageInput) {
 
 // Alkalmazás inicializálása
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🐖 FALUSI SZAR PIAC inicializálása...');
+    console.log('🐖 FALUSI PORTÉKA PIAC inicializálása...');
     console.log('DOM betöltve, API URL:', API_BASE_URL);
     
     // Kis várakozás a DOM elemek biztosítása érdekében
     setTimeout(async () => {
         await loadAds();
-        console.log('🌾 Kész, most már lehet árulni a szart!');
+        console.log('🌾 Kész, most már lehet kínálni a portékákat!');
     }, 100);
 });
 

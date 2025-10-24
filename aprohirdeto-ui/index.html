@@ -9,71 +9,71 @@
 <body>
     <div class="container">
         <header>
-            <h1>🐖 FALUSI SZAR PIAC 🌾</h1>
-            <p class="subtitle">Itt minden kurva szar eladó, amit a paraszt nem zabált fel! 🐓💩</p>
+            <h1>🐖 FALUSI PORTÉKA PIAC 🌾</h1>
+            <p class="subtitle">Itt minden holmi eladó, amit a gazda nem vitt haza! 🐓🥕</p>
         </header>
 
         <div class="form-section">
-            <h2>🐄 Rakd fel a szarodat, te paraszt!</h2>
+            <h2>🐄 Tedd fel a portékádat, öregem!</h2>
             
             <div id="error-message" class="error-message" style="display: none;"></div>
             <div id="success-message" class="success-message" style="display: none;"></div>
             
             <form id="ad-form" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="ad_title">🌾 Milyen szart akarsz eladni? *</label>
+                    <label for="ad_title">🌾 Mifajta holmit akarsz eladni? *</label>
                     <input type="text" id="ad_title" name="ad_title" required 
-                           placeholder="pl. Döglött tehén, rohadt krumpli, szar bicikli...">
+                           placeholder="pl. Régi bicikli, friss tojás, használt eke...">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="seller_name">🤠 Mi a fene a neved? *</label>
+                        <label for="seller_name">🤠 Hogy szólíthatlak, öregem? *</label>
                         <input type="text" id="seller_name" name="seller_name" required 
-                               placeholder="Józsi, Pista, vagy valami más szar név">
+                               placeholder="Józsi bácsi, Pista komám, vagy hasonló">
                     </div>
                     <div class="form-group">
-                        <label for="price">💰 Mennyiért adod ezt a szart?</label>
+                        <label for="price">💰 Mennyiért adod ezt a holmit?</label>
                         <input type="text" id="price" name="price" 
-                               placeholder="5000 forint (ne legyél túl mohó, paraszt!)">
+                               placeholder="5000 forint (ne legyél túl drága, komám!)">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email">📧 Email címed (ha van ilyen szar)</label>
+                        <label for="email">📧 Elektronikus levelezésed (ha van olyan csudálatos)</label>
                         <input type="email" id="email" name="email" 
-                               placeholder="paraszt@szaremail.hu">
+                               placeholder="gazda@tanyasi.levelek.hu">
                     </div>
                     <div class="form-group">
-                        <label for="phone">📞 Telefonszámod</label>
+                        <label for="phone">📞 Telefonos elérhetőséged</label>
                         <input type="tel" id="phone" name="phone" 
                                placeholder="+36 30 123 4567">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="ad_text">📝 Meséld el, milyen szörnyű szar ez!</label>
+                    <label for="ad_text">📝 Ecsetelj nekünk róla bővebben!</label>
                     <textarea id="ad_text" name="ad_text" 
-                              placeholder="Írd le, hogy mennyire szörnyű állapotban van ez a szar, de hátha valamelyik hülye megveszi..."></textarea>
+                              placeholder="Mesélj el mindent: mióta van nálad, hogy bánsz vele, milyen jót tesz, stb..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="image">📷 Fotózd le ezt a szörnyet!</label>
+                    <label for="image">📷 Készíts róla egy díszes fényképet!</label>
                     <input type="file" id="image" name="image" accept="image/*">
-                    <small>Maximum 5MB lehet ez a szar kép</small>
+                    <small>Maximum 5MB lehet a fénykép</small>
                 </div>
 
                 <button type="submit" id="submit-btn">
-                    🐖 Fel a szarral!
+                    🐖 Fel a portékával!
                 </button>
             </form>
         </div>
 
         <div class="gallery-section">
-            <h2>🏪 Nézzük, milyen szarokat árulnak a parasztok!</h2>
+            <h2>🏪 Lássuk, mifajta portékát kínálnak a tanyasiak!</h2>
             <div id="gallery">
-                <div class="loading">🐄 Töltjük a szarokat...</div>
+                <div class="loading">🐄 Betöltjük a holmikat...</div>
             </div>
         </div>
     </div>
