@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Mini Apróhirdető - Lambda Thumbnail Generator with S3 Trigger'
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: aprohirdeto-thumbnail-generator
+    Description: Name of the Lambda function
+    
+  S3BucketName:
+    Type: String
+    Default: beadando-kepek-w4pp9o
+    Description: S3 bucket name for images
+    
+  DBHost:
+    Type: String
+    Description: RDS MySQL endpoint
+    
+  DBUser:
+    Type: String
+    Default: admin
+    Description: Database username
+    
+  DBPassword:
+    Type: String
+    NoEcho: true
+    Description: Database password
+    
+  DBName:
+    Type: String
+    Default: aprohirdeto
+    Description: Database name
+
+Resources:
+  # Lambda execution role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${FunctionName}-execution-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub 'arn:aws:s3:::${S3BucketName}'
+
+  # Lambda Layer for Python dependencies
+  PythonDependenciesLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      LayerName: !Sub '${FunctionName}-dependencies'
+      Description: 'Pillow and PyMySQL for thumbnail generation'
+      Content:
+        S3Bucket: !Ref S3BucketName
+        S3Key: 'lambda-layers/python-dependencies.zip'
+      CompatibleRuntimes:
+        - python3.11
+      LicenseInfo: 'MIT'
+
+  # Lambda function
+  ThumbnailGeneratorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: python3.11
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          import json
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Placeholder - upload your code'}
+      Timeout: 30
+      MemorySize: 512
+      Environment:
+        Variables:
+          DB_HOST: !Ref DBHost
+          DB_USER: !Ref DBUser
+          DB_PASSWORD: !Ref DBPassword
+          DB_NAME: !Ref DBName
+      Layers:
+        - !Ref PythonDependenciesLayer
+
+  # S3 Bucket notification permission
+  S3InvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt ThumbnailGeneratorFunction.Arn
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub 'arn:aws:s3:::${S3BucketName}'
+
+  # S3 Bucket notification configuration (ha a bucket még nem létezik)
+  # S3Bucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: !Ref S3BucketName
+  #     NotificationConfiguration:
+  #       LambdaConfigurations:
+  #         - Event: s3:ObjectCreated:*
+  #           Function: !GetAtt ThumbnailGeneratorFunction.Arn
+  #           Filter:
+  #             S3Key:
+  #               Rules:
+  #                 - Name: prefix
+  #                   Value: uploads/
+
+Outputs:
+  LambdaFunctionArn:
+    Description: 'Lambda Function ARN'
+    Value: !GetAtt ThumbnailGeneratorFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaArn'
+      
+  LambdaFunctionName:
+    Description: 'Lambda Function Name'
+    Value: !Ref ThumbnailGeneratorFunction
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaName'
+      
+  IAMRoleArn:
+    Description: 'Lambda execution role ARN'
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'

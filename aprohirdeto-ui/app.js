@@ -1,3 +1,6 @@
+// API konfiguráció
+const API_BASE_URL = 'http://beadando-lb-555305300.eu-central-1.elb.amazonaws.com';
+
 // DOM elemek referenciái
 const adForm = document.getElementById('ad-form');
 const gallery = document.getElementById('gallery');
@@ -34,7 +37,7 @@ async function loadAds() {
     try {
         console.log('Hirdetések betöltése...');
         
-        const response = await fetch('/api/ads');
+        const response = await fetch(`${API_BASE_URL}/api/ads`);
         
         if (!response.ok) {
             throw new Error(`HTTP hiba: ${response.status} - ${response.statusText}`);
@@ -67,20 +70,26 @@ function renderAds(ads) {
     }
     
     const adsHtml = ads.map(ad => {
-        // Kép URL kezelése
+        // Kép URL kezelése (thumbnail_url vagy image_url)
         let imageHtml = '';
-        if (ad.thumbnail_url) {
-            // Ha van thumbnail_url, azt használjuk
-            const imageUrl = `https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/${ad.thumbnail_url}`;
-            imageHtml = `<img src="${imageUrl}" alt="${ad.ad_title}" class="ad-image" 
-                              onError="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                         <div class="ad-image" style="display:none; align-items:center; justify-content:center; background-color:#f0f0f0; color:#666;">
-                            🖼️ Kép nem elérhető
-                         </div>`;
-        } else {
-            // Ha nincs kép, placeholder megjelenítése
+        const imageUrl = ad.thumbnail_url || ad.image_url;
+        
+        if (imageUrl) {
+            // Ha van kép URL (thumbnail vagy eredeti)
+            const fullImageUrl = imageUrl.startsWith('http') 
+                ? imageUrl 
+                : `https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/${imageUrl}`;
+                
             imageHtml = `
-                <div class="ad-image" style="display:flex; align-items:center; justify-content:center; background-color:#f0f0f0; color:#666;">
+                <img src="${fullImageUrl}" alt="${ad.ad_title}" class="ad-image" 
+                     onError="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="ad-image-placeholder" style="display:none; align-items:center; justify-content:center; background-color:#f5f5f5; color:#888; border: 2px dashed #ddd;">
+                    🖼️ Kép nem tölthető be
+                </div>`;
+        } else {
+            // Ha nincs kép, szép placeholder megjelenítése
+            imageHtml = `
+                <div class="ad-image-placeholder" style="display:flex; align-items:center; justify-content:center; background-color:#f8f9fa; color:#6c757d; border: 2px dashed #dee2e6; font-size: 1.2em;">
                     📷 Nincs kép
                 </div>
             `;
@@ -147,7 +156,7 @@ adForm.addEventListener('submit', async (e) => {
         console.log('Hirdetés küldése...');
         
         // Kérés küldése a szerverre
-        const response = await fetch('/api/ads', {
+        const response = await fetch(`${API_BASE_URL}/api/ads`, {
             method: 'POST',
             body: formData
         });
@@ -222,7 +231,7 @@ async function editAd(adId) {
         console.log('Hirdetés betöltése szerkesztéshez:', adId);
         
         // Hirdetés adatainak lekérése
-        const response = await fetch(`/api/ads/${adId}`);
+        const response = await fetch(`${API_BASE_URL}/api/ads/${adId}`);
         
         if (!response.ok) {
             throw new Error(`Nem sikerült betölteni a hirdetést: ${response.status}`);
@@ -285,7 +294,7 @@ async function deleteAd(adId, adTitle) {
     try {
         console.log('Hirdetés törlése:', adId);
         
-        const response = await fetch(`/api/ads/${adId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/ads/${adId}`, {
             method: 'DELETE'
         });
         
@@ -347,7 +356,7 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
         console.log('Hirdetés frissítése:', adId);
         
         // Kérés küldése a szerverre
-        const response = await fetch(`/api/ads/${adId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/ads/${adId}`, {
             method: 'PUT',
             body: formData
         });

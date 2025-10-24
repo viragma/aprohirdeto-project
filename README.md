@@ -9,6 +9,7 @@ Egy egyszerű apróhirdetési webalkalmazás, amely lehetővé teszi a felhaszn�
 ```
 felho_proj/
 ├── README.md                    # Projekt dokumentáció
+├── DEPLOYMENT.md                # Részletes deployment útmutató
 ├── aprohirdeto-api/             # 🔧 Backend API Server
 │   ├── server.js               # Express API logika
 │   ├── package.json            # Node.js függőségek
@@ -19,18 +20,28 @@ felho_proj/
 │   ├── .env.example            # Környezeti változók
 │   ├── .gitignore              # Git kizárások
 │   └── README.md               # API dokumentáció
-└── aprohirdeto-ui/              # 🎨 Frontend Web UI
-    ├── index.html              # HTML struktúra
-    ├── styles.css              # CSS stíluslapok
-    ├── app.js                  # JavaScript logika
-    ├── package.json            # NPM konfiguráció
-    ├── Dockerfile              # UI Docker konfig
-    ├── docker-compose.yml      # Docker Compose setup
-    ├── nginx.conf              # Nginx webszerver konfig
-    ├── deploy.sh               # Linux/Mac deployment
-    ├── deploy.ps1              # Windows deployment
+├── aprohirdeto-ui/              # 🎨 Frontend Web UI
+│   ├── index.html              # HTML struktúra
+│   ├── styles.css              # CSS stíluslapok
+│   ├── app.js                  # JavaScript logika
+│   ├── package.json            # NPM konfiguráció
+│   ├── Dockerfile              # UI Docker konfig
+│   ├── docker-compose.yml      # Docker Compose setup
+│   ├── nginx.conf              # Nginx webszerver konfig
+│   ├── deploy.sh               # Linux/Mac deployment
+│   ├── deploy.ps1              # Windows deployment
+│   ├── .gitignore              # Git kizárások
+│   └── README.md               # UI dokumentáció
+└── aprohirdeto-lambda/          # ⚡ Serverless Thumbnail Generator
+    ├── lambda_function.py       # Python Lambda kód
+    ├── requirements.txt         # Python függőségek
+    ├── build-lambda.sh          # Linux/Mac build script
+    ├── build-lambda.ps1         # Windows build script
+    ├── test_lambda.py           # Tesztelési script
+    ├── lambda-iam-policy.json   # IAM policy template
+    ├── cloudformation-template.yml # Infrastructure as Code
     ├── .gitignore              # Git kizárások
-    └── README.md               # UI dokumentáció
+    └── README.md               # Lambda dokumentáció
 ```
 
 ## 🚀 Backend API (aprohirdeto-api)
@@ -222,12 +233,45 @@ Ha külön szervereken futnak:
 2. **API URL frissítése** - UI-ban cseréld le a relatív URL-eket abszolútra
 3. **Load Balancer** - Opcionálisan használhatsz közös bejárati pontot
 
+### ⚡ Lambda Thumbnail Generator
+
+1. **Repository klónozása:**
+   ```bash
+   git clone <repository-url>
+   cd aprohirdeto-lambda
+   ```
+
+2. **Lambda deployment package készítése:**
+   ```bash
+   # Linux/Mac
+   chmod +x build-lambda.sh
+   ./build-lambda.sh
+
+   # Windows PowerShell
+   .\build-lambda.ps1
+   ```
+
+3. **AWS Lambda deployment:**
+   ```bash
+   aws lambda create-function \
+     --function-name aprohirdeto-thumbnail-generator \
+     --runtime python3.11 \
+     --role arn:aws:iam::ACCOUNT:role/lambda-execution-role \
+     --handler lambda_function.lambda_handler \
+     --zip-file fileb://lambda-deployment-package.zip \
+     --timeout 30 \
+     --memory-size 512
+   ```
+
+4. **S3 Trigger beállítása:** Bucket events -> uploads/ prefix
+
 ### ☁️ AWS Infrastruktúra
 
-**Már létező komponensek:**
+**Komponensek:**
 - **RDS MySQL** - `aprohirdeto` adatbázis
 - **S3 Bucket** - `beadando-kepek-w4pp9o`
-- **IAM Roles** - EC2 instance S3 hozzáféréshez
+- **Lambda Function** - automatikus thumbnail generálás
+- **IAM Roles** - megfelelő jogosultságokkal
 
 ## 📞 Támogatás
 

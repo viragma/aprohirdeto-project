@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
-const AWS = require('aws-sdk');
+const { S3Client } = require('@aws-sdk/client-s3');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const cors = require('cors');
@@ -15,8 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// AWS S3 beállítása
-const s3 = new AWS.S3({
+// AWS S3 beállítása (v3)
+const s3 = new S3Client({
     region: process.env.AWS_REGION || 'eu-central-1'
 });
 

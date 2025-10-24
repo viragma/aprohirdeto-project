@@ -1,0 +1,14 @@
+# AWS Lambda Requirements
+# Ezek a csomagok Lambda Layer-ként lesznek biztosítva
+
+# Kép feldolgozáshoz
+Pillow==10.0.1
+
+# MySQL adatbázis kapcsolathoz
+PyMySQL==1.1.0
+
+# AWS SDK (általában már elérhető Lambda-ban, de explicit megadás)
+boto3>=1.28.0
+
+# Hasznos kiegészítők
+cryptography>=41.0.0  # PyMySQL-hez SSL kapcsolatokhoz
