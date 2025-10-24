@@ -102,17 +102,17 @@ function renderAds(ads) {
         }
         
         return `
-            <div class="ad-card">
+            <div class="ad-card" style="background: white; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); min-height: 300px; display: flex; flex-direction: column; margin-bottom: 20px; border: 2px solid red;">
                 ${imageHtml}
-                <div class="ad-content">
-                    <div class="ad-title">${escapeHtml(ad.ad_title || 'Névtelen hirdetés')}</div>
-                    ${ad.price ? `<div class="ad-price">${escapeHtml(ad.price)}</div>` : ''}
-                    <div class="ad-seller">👤 ${escapeHtml(ad.seller_name || 'Névtelen eladó')}</div>
-                    <div class="ad-actions">
-                        <button class="btn-small btn-edit" onclick="editAd(${ad.id})">
+                <div class="ad-content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="ad-title" style="font-size: 1.3rem; font-weight: 600; color: #333; margin-bottom: 0.5rem;">${escapeHtml(ad.ad_title || 'Névtelen hirdetés')}</div>
+                    ${ad.price ? `<div class="ad-price" style="font-size: 1.5rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">${escapeHtml(ad.price)}</div>` : ''}
+                    <div class="ad-seller" style="color: #666; margin-bottom: 1rem;">👤 ${escapeHtml(ad.seller_name || 'Névtelen eladó')}</div>
+                    <div class="ad-actions" style="display: flex; gap: 0.5rem; margin-top: auto;">
+                        <button class="btn-small btn-edit" onclick="editAd(${ad.id})" style="padding: 8px 16px; font-size: 0.9rem; border: none; border-radius: 5px; cursor: pointer; background-color: #ffd43b; color: #333;">
                             ✏️ Szerkesztés
                         </button>
-                        <button class="btn-small btn-delete" onclick="deleteAd(${ad.id}, '${escapeHtml(ad.ad_title)}')">
+                        <button class="btn-small btn-delete" onclick="deleteAd(${ad.id}, '${escapeHtml(ad.ad_title)}')" style="padding: 8px 16px; font-size: 0.9rem; border: none; border-radius: 5px; cursor: pointer; background-color: #ff6b6b; color: white;">
                             🗑️ Törlés
                         </button>
                     </div>
@@ -126,6 +126,12 @@ function renderAds(ads) {
     
     // Explicit clear and set
     gallery.innerHTML = '';
+    gallery.style.display = 'block';
+    gallery.style.width = '100%';
+    gallery.style.minHeight = '200px';
+    gallery.style.backgroundColor = '#f0f0f0';
+    gallery.style.padding = '20px';
+    gallery.style.border = '3px solid blue';
     gallery.innerHTML = adsHtml;
     
     console.log('Gallery element after update:', gallery.innerHTML);
