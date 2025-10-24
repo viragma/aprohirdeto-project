@@ -122,8 +122,13 @@ function renderAds(ads) {
     }).join('');
     
     console.log('Generated HTML length:', adsHtml.length);
-    console.log('Gallery element:', gallery);
+    console.log('Gallery element before update:', gallery.innerHTML);
+    
+    // Explicit clear and set
+    gallery.innerHTML = '';
     gallery.innerHTML = adsHtml;
+    
+    console.log('Gallery element after update:', gallery.innerHTML);
     console.log('Gallery updated successfully');
 }
 
