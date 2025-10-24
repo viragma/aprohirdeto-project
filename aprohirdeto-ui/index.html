@@ -193,10 +193,12 @@
                 message.innerHTML = '<div class="alert alert-success">✅ Sikeresen feladva!</div>';
                 e.target.reset();
                 
+                // Újratöltjük a hirdetéseket
+                loadAds();
+                
                 setTimeout(() => {
-                    loadAds();
                     message.innerHTML = '';
-                }, 1000);
+                }, 2000);
                 
             } catch (error) {
                 message.innerHTML = `<div class="alert alert-danger">❌ ${error.message}</div>`;
