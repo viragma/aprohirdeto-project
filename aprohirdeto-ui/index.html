@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Apróhirdető</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏪 Mini Apróhirdető</h1>
+            <p class="subtitle">Adj fel hirdetést egyszerűen és gyorsan!</p>
+        </header>
+
+        <div class="form-section">
+            <h2>📝 Új hirdetés feladása</h2>
+            
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+            
+            <form id="ad-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="ad_title">Hirdetés címe *</label>
+                    <input type="text" id="ad_title" name="ad_title" required 
+                           placeholder="pl. Eladó használt laptop">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="seller_name">Eladó neve *</label>
+                        <input type="text" id="seller_name" name="seller_name" required 
+                               placeholder="Az Ön neve">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Ár</label>
+                        <input type="text" id="price" name="price" 
+                               placeholder="pl. 50 000 Ft">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">E-mail cím</label>
+                        <input type="email" id="email" name="email" 
+                               placeholder="pelda@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefonszám</label>
+                        <input type="tel" id="phone" name="phone" 
+                               placeholder="+36 30 123 4567">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ad_text">Hirdetés szövege</label>
+                    <textarea id="ad_text" name="ad_text" 
+                              placeholder="Írja le részletesen, mit szeretne eladni..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Kép feltöltése</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+
+                <button type="submit" id="submit-btn">
+                    🚀 Hirdetés feladása
+                </button>
+            </form>
+        </div>
+
+        <div class="gallery-section">
+            <h2>🖼️ Összes hirdetés</h2>
+            <div id="gallery">
+                <div class="loading">📱 Hirdetések betöltése...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Szerkesztő Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Hirdetés szerkesztése</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            
+            <div id="edit-error-message" class="error-message"></div>
+            <div id="edit-success-message" class="success-message"></div>
+            
+            <form id="edit-form" enctype="multipart/form-data">
+                <input type="hidden" id="edit-ad-id" name="ad_id">
+                
+                <div class="form-group">
+                    <label for="edit-ad_title">Hirdetés címe *</label>
+                    <input type="text" id="edit-ad_title" name="ad_title" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-seller_name">Eladó neve *</label>
+                        <input type="text" id="edit-seller_name" name="seller_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-price">Ár</label>
+                        <input type="text" id="edit-price" name="price">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-email">E-mail cím</label>
+                        <input type="email" id="edit-email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">Telefonszám</label>
+                        <input type="tel" id="edit-phone" name="phone">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-ad_text">Hirdetés szövege</label>
+                    <textarea id="edit-ad_text" name="ad_text"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-image">Új kép feltöltése (opcionális)</label>
+                    <input type="file" id="edit-image" name="image" accept="image/*">
+                    <small style="color: #666; font-size: 0.9rem;">Ha nem választ új képet, a régi megmarad.</small>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" onclick="closeEditModal()" 
+                            style="background-color: #6c757d; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer;">
+                        ❌ Mégse
+                    </button>
+                    <button type="submit" id="edit-submit-btn" class="btn-small" 
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; font-size: 1rem;">
+                        💾 Mentés
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
