@@ -221,19 +221,21 @@ button:disabled {
 .ad-card {
     background: #FFFACD !important;
     border: 4px solid #8B4513 !important;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin: 0 !important;
     box-shadow: 
         0 5px 15px rgba(139, 69, 19, 0.4),
         inset 0 1px 3px rgba(255,255,255,0.6);
     transition: all 0.3s ease;
     /* transform: rotate(-0.3deg); */
-    min-height: 250px;
+    min-height: 250px !important;
     position: relative;
     z-index: 3;
     opacity: 1 !important;
     visibility: visible !important;
     display: block !important;
+    width: 100% !important;
 }
 
 .ad-card:hover {
@@ -244,29 +246,31 @@ button:disabled {
 }
 
 .ad-card h3 {
-    color: #654321;
-    margin-bottom: 12px;
-    font-size: 1.4rem;
+    color: #654321 !important;
+    margin-bottom: 12px !important;
+    font-size: 1.4rem !important;
     text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
     border-bottom: 2px dotted #8B4513;
-    padding-bottom: 8px;
+    padding-bottom: 8px !important;
 }
 
 .ad-card p {
-    margin-bottom: 10px;
-    color: #2d1b00;
-    line-height: 1.5;
+    margin-bottom: 10px !important;
+    color: #2d1b00 !important;
+    line-height: 1.5 !important;
+    padding: 5px 0 !important;
 }
 
 .ad-card .price {
-    font-weight: bold;
-    color: #228B22;
-    font-size: 1.3rem;
-    background: #F0FFF0;
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 2px solid #32CD32;
-    display: inline-block;
+    font-weight: bold !important;
+    color: #228B22 !important;
+    font-size: 1.3rem !important;
+    background: #F0FFF0 !important;
+    padding: 5px 10px !important;
+    border-radius: 8px !important;
+    border: 2px solid #32CD32 !important;
+    display: inline-block !important;
+    margin-bottom: 10px !important;
 }
 
 .ad-card img {
