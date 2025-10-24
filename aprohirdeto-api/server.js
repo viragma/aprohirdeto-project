@@ -81,7 +81,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/ads', async (req, res) => {
     try {
         const [rows] = await pool.execute(
-            'SELECT id, ad_title, price, seller_name, thumbnail_url FROM advertisements ORDER BY created_at DESC'
+            'SELECT id, ad_title, price, seller_name, image_url, thumbnail_url FROM advertisements ORDER BY created_at DESC'
         );
         
         res.status(200).json(rows);
