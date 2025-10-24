@@ -8,9 +8,9 @@ const submitBtn = document.getElementById('submit-btn');
 const errorMessage = document.getElementById('error-message');
 const successMessage = document.getElementById('success-message');
 
-// Hibaüzenet megjelenítése parasztos stílusban
+// Hibaüzenet megjelenítése
 function showError(message) {
-    errorMessage.textContent = `🐷 Hoppá! ${message}`;
+    errorMessage.textContent = message;
     errorMessage.style.display = 'block';
     successMessage.style.display = 'none';
     
@@ -20,9 +20,9 @@ function showError(message) {
     }, 5000);
 }
 
-// Sikeres üzenet megjelenítése parasztos stílusban
+// Sikeres üzenet megjelenítése
 function showSuccess(message) {
-    successMessage.textContent = `🌾 Szuper! ${message}`;
+    successMessage.textContent = message;
     successMessage.style.display = 'block';
     errorMessage.style.display = 'none';
     
@@ -52,7 +52,7 @@ async function loadAds() {
         console.error('Hiba a hirdetések betöltésekor:', error);
         gallery.innerHTML = `
             <div class="no-ads">
-                🐄 Ajjaj! Nem tudtuk betölteni a hirdetéseket: ${error.message}
+                ❌ Hiba történt a hirdetések betöltésekor: ${error.message}
             </div>
         `;
     }
@@ -67,7 +67,7 @@ function renderAds(ads) {
         console.log('No ads to render');
         gallery.innerHTML = `
             <div class="no-ads">
-                🌾 Még senki sem árul semmit! Légy te az első gazda!
+                📭 Még nincsenek hirdetések. Legyen Ön az első!
             </div>
         `;
         return;
@@ -90,13 +90,13 @@ function renderAds(ads) {
                 <img src="${fullImageUrl}" alt="${ad.ad_title}" class="ad-image" 
                      onError="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="ad-image-placeholder" style="display:none; align-items:center; justify-content:center; background-color:#f5f5f5; color:#888; border: 2px dashed #ddd;">
-                    � Kép nem jött be
+                    🖼️ Kép nem tölthető be
                 </div>`;
         } else {
             // Ha nincs kép, szép placeholder megjelenítése
             imageHtml = `
                 <div class="ad-image-placeholder" style="display:flex; align-items:center; justify-content:center; background-color:#f8f9fa; color:#6c757d; border: 2px dashed #dee2e6; font-size: 1.2em;">
-                    🌾 Nincs kép erről
+                    📷 Nincs kép
                 </div>
             `;
         }
@@ -107,13 +107,13 @@ function renderAds(ads) {
                 <div class="ad-content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
                     <div class="ad-title" style="font-size: 1.3rem; font-weight: 600; color: #333; margin-bottom: 0.5rem;">${escapeHtml(ad.ad_title || 'Névtelen hirdetés')}</div>
                     ${ad.price ? `<div class="ad-price" style="font-size: 1.5rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">${escapeHtml(ad.price)}</div>` : ''}
-                    <div class="ad-seller" style="color: #666; margin-bottom: 1rem;">🤠 ${escapeHtml(ad.seller_name || 'Ismeretlen gazda')}</div>
+                    <div class="ad-seller" style="color: #666; margin-bottom: 1rem;">👤 ${escapeHtml(ad.seller_name || 'Névtelen eladó')}</div>
                     <div class="ad-actions" style="display: flex; gap: 0.5rem; margin-top: auto;">
                         <button class="btn-small btn-edit" onclick="editAd(${ad.id})" style="padding: 8px 16px; font-size: 0.9rem; border: none; border-radius: 5px; cursor: pointer; background-color: #ffd43b; color: #333;">
-                            ✏️ Átírás
+                            ✏️ Szerkesztés
                         </button>
                         <button class="btn-small btn-delete" onclick="deleteAd(${ad.id}, '${escapeHtml(ad.ad_title)}')" style="padding: 8px 16px; font-size: 0.9rem; border: none; border-radius: 5px; cursor: pointer; background-color: #ff6b6b; color: white;">
-                            🗑️ Kidobás
+                            🗑️ Törlés
                         </button>
                     </div>
                 </div>
@@ -160,7 +160,7 @@ adForm.addEventListener('submit', async (e) => {
     try {
         // Gomb letiltása és betöltő állapot
         submitBtn.disabled = true;
-        submitBtn.textContent = '🐄 Feltöltöm...';
+        submitBtn.textContent = '⏳ Feltöltés...';
         
         // Hibaüzenetek elrejtése
         errorMessage.style.display = 'none';
@@ -174,11 +174,11 @@ adForm.addEventListener('submit', async (e) => {
         const sellerName = formData.get('seller_name');
         
         if (!adTitle || !adTitle.trim()) {
-            throw new Error('Írd már be, mit akarsz eladni!');
+            throw new Error('A hirdetés címe kötelező!');
         }
         
         if (!sellerName || !sellerName.trim()) {
-            throw new Error('Írd be a nevedet, hogy tudjuk, ki vagy!');
+            throw new Error('Az eladó neve kötelező!');
         }
         
         console.log('Hirdetés küldése...');
@@ -198,7 +198,7 @@ adForm.addEventListener('submit', async (e) => {
         console.log('Sikeres válasz:', result);
         
         // Sikeres üzenet megjelenítése
-        showSuccess('A portékádat felvettük! Most már láthatják mások is!');
+        showSuccess('✅ Hirdetés sikeresen feladva!');
         
         // Űrlap kiürítése
         adForm.reset();
@@ -212,7 +212,7 @@ adForm.addEventListener('submit', async (e) => {
     } finally {
         // Gomb visszaállítása
         submitBtn.disabled = false;
-        submitBtn.textContent = '� Fel a portékával!';
+        submitBtn.textContent = '🚀 Hirdetés feladása';
     }
 });
 
@@ -225,14 +225,14 @@ imageInput.addEventListener('change', (e) => {
         // Fájlméret ellenőrzése (10MB max)
         const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
-            showError('Ez a kép túl nagy! Maximum 10MB lehet.');
+            showError('A kiválasztott fájl túl nagy! Maximum 10MB méretű fájl tölthető fel.');
             imageInput.value = '';
             return;
         }
         
         // Fájltípus ellenőrzése
         if (!file.type.startsWith('image/')) {
-            showError('Csak képet lehet feltölteni!');
+            showError('Csak képfájlok tölthetők fel!');
             imageInput.value = '';
             return;
         }
@@ -243,12 +243,12 @@ imageInput.addEventListener('change', (e) => {
 
 // Alkalmazás inicializálása
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🌾 Falusi Apróhirdető alkalmazás inicializálása...');
+    console.log('Mini Apróhirdető alkalmazás inicializálása...');
     
     // Hirdetések betöltése az oldal betöltésekor
     await loadAds();
     
-    console.log('🐷 Alkalmazás kész, lehet árulni!');
+    console.log('Alkalmazás sikeresen inicializálva!');
 });
 
 // === CRUD FUNKCIÓK ===
@@ -273,7 +273,7 @@ async function editAd(adId) {
         
     } catch (error) {
         console.error('Hiba a hirdetés betöltésekor:', error);
-        showError(`Nem tudtuk betölteni a hirdetést: ${error.message}`);
+        showError(`Hiba történt a hirdetés betöltésekor: ${error.message}`);
     }
 }
 
@@ -312,11 +312,11 @@ function closeEditModal() {
 
 // Hirdetés törlése
 async function deleteAd(adId, adTitle) {
-    // Megerősítő dialógus parasztos stílusban
-    const confirmed = confirm(`Biztos, hogy ki akarod dobni ezt a hirdetést?\n\n"${adTitle}"\n\nUtána nem tudod visszahozni!`);
+    // Megerősítő dialógus
+    const confirmed = confirm(`Biztosan törölni szeretné a következő hirdetést?\n\n"${adTitle}"\n\nEz a művelet nem vonható vissza!`);
     
     if (!confirmed) {
-        return; // Meggondolta magát
+        return; // Felhasználó lemondta
     }
     
     try {
@@ -335,14 +335,14 @@ async function deleteAd(adId, adTitle) {
         console.log('Törlés sikeres:', result);
         
         // Sikeres üzenet megjelenítése
-        showSuccess('Kidobtuk a hirdetésed!');
+        showSuccess('✅ Hirdetés sikeresen törölve!');
         
         // Hirdetések újratöltése
         await loadAds();
         
     } catch (error) {
         console.error('Hiba a hirdetés törlésekor:', error);
-        showError(`Nem tudtuk kidobni: ${error.message}`);
+        showError(`Hiba történt a törlés során: ${error.message}`);
     }
 }
 
@@ -359,7 +359,7 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
         
         // Gomb letiltása és betöltő állapot
         submitBtn.disabled = true;
-        submitBtn.textContent = '🐄 Elmentem...';
+        submitBtn.textContent = '⏳ Mentés...';
         
         // Hibaüzenetek elrejtése
         errorDiv.style.display = 'none';
