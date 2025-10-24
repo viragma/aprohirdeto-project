@@ -130,6 +130,14 @@ function renderAds(ads) {
     
     console.log('Gallery element after update:', gallery.innerHTML);
     console.log('Gallery updated successfully');
+    
+    // Fallback timeout esetére
+    setTimeout(() => {
+        if (gallery.innerHTML !== adsHtml) {
+            console.warn('Gallery content changed after update, restoring...');
+            gallery.innerHTML = adsHtml;
+        }
+    }, 100);
 }
 
 // HTML escape segédfüggvény (XSS védelem)
@@ -228,11 +236,11 @@ imageInput.addEventListener('change', (e) => {
 });
 
 // Alkalmazás inicializálása
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('Mini Apróhirdető alkalmazás inicializálása...');
     
     // Hirdetések betöltése az oldal betöltésekor
-    loadAds();
+    await loadAds();
     
     console.log('Alkalmazás sikeresen inicializálva!');
 });
