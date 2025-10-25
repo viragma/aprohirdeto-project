@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Box, Typography, TextField, Button, CircularProgress } from '@mui/material';
 
-// A Modal stílusa (változatlan)
+
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  maxWidth: '90%', // Mobilbarátabb
-  maxHeight: '90vh', // Hogy elférjen több mező
-  overflowY: 'auto', // Görgethető legyen, ha kell
+  maxWidth: '90%', 
+  maxHeight: '90vh', 
+  overflowY: 'auto', 
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -18,43 +18,43 @@ const style = {
 };
 
 function AdFormModal({ open, onClose, onSave, ad }) {
-  // === KIEGÉSZÍTÉS: Új state mezők ===
+
   const [formData, setFormData] = useState({
     ad_title: '',
     seller_name: '',
     price: '',
     ad_text: '',
-    email: '', // Új
-    phone: '', // Új
+    email: '', 
+    phone: '',
   });
-  // === KIEGÉSZÍTÉS VÉGE ===
+
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (ad) {
-      // === KIEGÉSZÍTÉS: Új mezők betöltése szerkesztéskor ===
+
       setFormData({
         ad_title: ad.ad_title || '',
         seller_name: ad.seller_name || '',
         price: ad.price || '',
         ad_text: ad.ad_text || '',
-        email: ad.email || '', // Új
-        phone: ad.phone || '', // Új
+        email: ad.email || '', 
+        phone: ad.phone || '', 
       });
-      // === KIEGÉSZÍTÉS VÉGE ===
+
       setImageFile(null);
     } else {
-      // === KIEGÉSZÍTÉS: Új mezők törlése új hirdetésnél ===
+
       setFormData({
         ad_title: '',
         seller_name: '',
         price: '',
         ad_text: '',
-        email: '', // Új
-        phone: '', // Új
+        email: '', 
+        phone: '', 
       });
-      // === KIEGÉSZÍTÉS VÉGE ===
+
       setImageFile(null);
     }
   }, [ad, open]);
@@ -96,15 +96,15 @@ function AdFormModal({ open, onClose, onSave, ad }) {
           {ad ? 'Portéka szerkesztése' : 'Új portéka feladása'}
         </Typography>
 
-        <TextField margin="normal" required fullWidth label="Mit akarsz eladni?" name="ad_title" value={formData.ad_title} onChange={handleChange} />
-        <TextField margin="normal" required fullWidth label="A te neved?" name="seller_name" value={formData.seller_name} onChange={handleChange} />
-        <TextField margin="normal" fullWidth label="Mennyiért?" name="price" value={formData.price} onChange={handleChange} />
+        <TextField margin="normal" required fullWidth label="Mitől szabadulna meg?" name="ad_title" value={formData.ad_title} onChange={handleChange} />
+        <TextField margin="normal" required fullWidth label="Aztat téged hogy hínak?" name="seller_name" value={formData.seller_name} onChange={handleChange} />
+        <TextField margin="normal" fullWidth label="Mennyiért?!" name="price" value={formData.price} onChange={handleChange} />
 
-        {/* === KIEGÉSZÍTÉS: Új űrlapmezők === */}
-        <TextField margin="normal" fullWidth type="email" label="Email címed (opcionális)" name="email" value={formData.email} onChange={handleChange} />
-        <TextField margin="normal" fullWidth type="tel" label="Telefonszámod (opcionális)" name="phone" value={formData.phone} onChange={handleChange} />
-        <TextField margin="normal" fullWidth multiline rows={3} label="Mesélj róla... (opcionális)" name="ad_text" value={formData.ad_text} onChange={handleChange} />
-        {/* === KIEGÉSZÍTÉS VÉGE === */}
+
+        <TextField margin="normal" fullWidth type="email" label="Elektronyos címed?" name="email" value={formData.email} onChange={handleChange} />
+        <TextField margin="normal" fullWidth type="tel" label="Beszélődrót?" name="phone" value={formData.phone} onChange={handleChange} />
+        <TextField margin="normal" fullWidth multiline rows={3} label="Mondjon mán valamit róla..." name="ad_text" value={formData.ad_text} onChange={handleChange} />
+
 
         <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }} > Kép feltöltése (opcionális)
           <input type="file" name="image" hidden accept="image/*" onChange={handleFileChange} />

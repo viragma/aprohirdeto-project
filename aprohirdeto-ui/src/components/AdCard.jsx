@@ -8,14 +8,9 @@ import NotesIcon from '@mui/icons-material/Notes'; // Leírás ikon
 import { S3_BUCKET_URL } from '../apiConfig'; // Importáljuk az S3 URL-t
 
 function AdCard({ ad, onEdit, onDelete }) {
-  // === CSAK AZ EREDETI KÉPET HASZNÁLJUK ===
-  // Figyelmen kívül hagyjuk a thumbnail_url-t, mert a Lambda nem generálja le.
+  
   const imageKey = ad.image_url; // Közvetlenül az image_url-t vesszük az API válaszból.
   const fullImageUrl = imageKey ? `${S3_BUCKET_URL}${imageKey}` : null; // Összefűzzük az S3 URL-lel
-  // === MÓDOSÍTÁS VÉGE ===
-
-  // Hibakereső logolás (kikommentelve, de hasznos lehet)
-  // console.log(`Ad ID: ${ad.id}, Image Key: ${imageKey}, Full URL: ${fullImageUrl}`);
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -53,7 +48,7 @@ function AdCard({ ad, onEdit, onDelete }) {
 
         {/* Eladó neve */}
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Eladó: <strong>{ad.seller_name || 'Ismeretlen'}</strong>
+          Árus: <strong>{ad.seller_name || 'Ismeretlen'}</strong>
         </Typography>
 
         {/* Leírás (ha van) */}
@@ -81,10 +76,10 @@ function AdCard({ ad, onEdit, onDelete }) {
       {/* Művelet Gombok */}
       <CardActions sx={{ justifyContent: 'space-between', borderTop: '1px solid #eee', pt: 1 }}>
         <Button size="small" startIcon={<EditIcon />} onClick={onEdit}>
-          Szerkesztés
+         Kifinomítás
         </Button>
         <Button size="small" color="error" startIcon={<DeleteIcon />} onClick={onDelete}>
-          Törlés
+          Hatálytalanítás
         </Button>
       </CardActions>
     </Card>

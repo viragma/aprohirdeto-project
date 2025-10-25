@@ -81,7 +81,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/ads', async (req, res) => {
     try {
         const [rows] = await pool.execute(
-            'SELECT id, ad_title, price, seller_name, image_url, thumbnail_url FROM advertisements ORDER BY created_at DESC'
+            'SELECT * FROM advertisements ORDER BY created_at DESC'
         );
         
             // Presigned URL generálás minden image_url-hez
