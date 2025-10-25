@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // === BEÁLLÍTÁSOK ===
-    // Az AWS API Load Balancered címe (ahogy az 'old/app.js'-ben is volt)
     const API_URL = 'http://beadando-lb-555305300.eu-central-1.elb.amazonaws.com/api/ads';
-    
-    // Az S3 bucketod címe, ahol a képek vannak (a 'lambda_function.py' alapján)
     const S3_BUCKET_URL = 'https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/';
     // === BEÁLLÍTÁSOK VÉGE ===
 
@@ -23,17 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const ads = await response.json();
 
-            // Ez a rész kezeli a "villanást" (eltűnést)
-            if (!ads || ads.length === 0) {
-                adsList.innerHTML = '<p class="empty-text">🌾 Még senki sem árul semmit!</p>';
-                return;
-            }
+            // Ellenőrizzük, hogy tömb-e és van-e benne adat
+            if (Array.isArray(ads) && ads.length > 0) {
+                adsList.innerHTML = ''; // "Betöltés" eltávolítása ("semmi" rész)
+                
+                // Hiba keresése: A forEach-en belül van a hiba?
+                try {
+                    ads.forEach(ad => {
+                        const card = createAdCard(ad);
+                        adsList.appendChild(card);
+                    });
+                } catch (renderError) {
+                    console.error('Hiba a kártya kirajzolásakor:', renderError);
+                    adsList.innerHTML = `<p class="empty-text" style="color:red;">❌ Hiba a hirdetések feldolgozása közben: ${renderError.message}</p>`;
+                }
 
-            // Lista kiürítése és feltöltése
-            adsList.innerHTML = '';
-            ads.forEach(ad => {
-                adsList.appendChild(createAdCard(ad));
-            });
+            } else {
+                // Ez fut le, ha az 'ads' üres tömb: []
+                adsList.innerHTML = '<p class="empty-text">🌾 Még senki sem árul semmit!</p>';
+            }
 
         } catch (error) {
             console.error('Hiba a hirdetések betöltésekor:', error);
@@ -41,26 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. Hirdetés kártya létrehozása ---
+    // --- 2. Hirdetés kártya létrehozása (EGYSZERŰSÍTVE) ---
     function createAdCard(ad) {
         const card = document.createElement('div');
         card.className = 'ad-card';
 
         let imageHtml = '';
-        // Az API 'thumbnail_url'-t vagy 'image_url'-t küld
+        
+        // Biztonságos adatkezelés (ha 'null' az érték)
         const imageKey = ad.thumbnail_url || ad.image_url;
+        const title = ad.ad_title || 'Nincs cím';
+        const price = ad.price || 'Ár megegyezés szerint';
+        const seller = ad.seller_name || 'Ismeretlen eladó';
 
         if (imageKey) {
+            // A te adatodból látom, hogy az 'image_url'-ben benne van az 'uploads/' prefix
+            // Ez így helyes.
             const fullImageUrl = S3_BUCKET_URL + imageKey;
-            imageHtml = `<img src="${fullImageUrl}" alt="${ad.ad_title}" class="ad-image">`;
+            imageHtml = `<img src="${fullImageUrl}" alt="${title}" class="ad-image">`;
         }
 
+        // Kivettük az 'escapeHtml' függvényt, hogy kizárjuk a hibát
         card.innerHTML = `
             ${imageHtml}
             <div class="ad-content">
-                <h3>${escapeHtml(ad.ad_title)}</h3>
-                <p class="ad-price">${escapeHtml(ad.price || 'Ár megegyezés szerint')}</p>
-                <p class="ad-seller">Eladó: ${escapeHtml(ad.seller_name)}</p>
+                <h3>${title}</h3>
+                <p class="ad-price">${price}</p>
+                <p class="ad-seller">Eladó: ${seller}</p>
             </div>
         `;
         return card;
@@ -68,9 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. Űrlap elküldése ---
     adForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Alapértelmezett küldés megakadályozása
+        e.preventDefault();
         
-        showMessage(null); // Korábbi üzenetek törlése
+        showMessage(null);
         submitButton.disabled = true;
         submitButton.textContent = '⏳ Feltöltés...';
 
@@ -87,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorData.message || `Hiba: ${response.status}`);
             }
 
-            // Sikeres küldés
             showMessage('✅ Sikeresen feladva!', 'success');
             adForm.reset();
             loadAds(); // Lista frissítése
@@ -101,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Segédfüggvények ---
+    // --- Segédfüggvény: Üzenet megjelenítése ---
     function showMessage(message, type) {
         messageArea.innerHTML = '';
         if (!message) {
@@ -110,18 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         messageArea.textContent = message;
-        messageArea.className = `message ${type}`; // 'message success' vagy 'message error'
+        messageArea.className = `message ${type}`;
         messageArea.style.display = 'block';
-    }
-
-    function escapeHtml(text) {
-        if (text === null || text === undefined) return '';
-        return text.toString()
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
     }
 
     // --- Indítás ---
