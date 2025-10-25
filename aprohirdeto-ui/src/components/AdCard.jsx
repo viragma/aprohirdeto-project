@@ -8,11 +8,14 @@ import NotesIcon from '@mui/icons-material/Notes'; // Leírás ikon
 import { S3_BUCKET_URL } from '../apiConfig'; // Importáljuk az S3 URL-t
 
 function AdCard({ ad, onEdit, onDelete }) {
-  // === MÓDOSÍTÁS: Csak az eredeti képet (image_url) használjuk ===
+  // === CSAK AZ EREDETI KÉPET HASZNÁLJUK ===
   // Figyelmen kívül hagyjuk a thumbnail_url-t, mert a Lambda nem generálja le.
-  const imageKey = ad.image_url;
+  const imageKey = ad.image_url; // Közvetlenül az image_url-t vesszük az API válaszból.
   const fullImageUrl = imageKey ? `${S3_BUCKET_URL}${imageKey}` : null; // Összefűzzük az S3 URL-lel
   // === MÓDOSÍTÁS VÉGE ===
+
+  // Hibakereső logolás (kikommentelve, de hasznos lehet)
+  // console.log(`Ad ID: ${ad.id}, Image Key: ${imageKey}, Full URL: ${fullImageUrl}`);
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -23,15 +26,14 @@ function AdCard({ ad, onEdit, onDelete }) {
           height="200"
           image={fullImageUrl}
           alt={ad.ad_title || 'Hirdetés képe'}
-          // Hibakezelés, ha a kép URL rossz vagy a kép nem elérhető (pl. S3 jogosultság)
+          // Hibakezelés a kép betöltéséhez
           onError={(e) => {
             console.error(`Kép betöltési hiba: ${fullImageUrl}`, e);
             e.target.style.display='none'; // Elrejtjük a hibás kép helyét
-            // Opcionálisan ide tehetsz egy placeholder képet vagy szöveget
           }}
         />
       ) : (
-        // Placeholder, ha nincs kép URL az adatbázisban
+        // Placeholder, ha nincs image_url az adatbázisban
         <Box height="200" display="flex" alignItems="center" justifyContent="center" bgcolor="#eee">
           <Typography color="textSecondary">Nincs kép</Typography>
         </Box>
