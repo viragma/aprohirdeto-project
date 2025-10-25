@@ -48,9 +48,9 @@ const upload = multer({
 
 // MySQL kapcsolat pool létrehozása
 const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
+    host: process.env.DB_HOST || 'database-w4pp9o-beadando.cfuok4k4m0j0.eu-central-1.rds.amazonaws.com',
+    user: process.env.DB_USER || 'admin',
+    password: process.env.DB_PASSWORD || 'Init12131415',
     database: process.env.DB_NAME || 'aprohirdeto',
     waitForConnections: true,
     connectionLimit: 10,

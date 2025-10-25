@@ -1,0 +1,39 @@
+{
+  "name": "aprohirdeto-ui",
+  "version": "1.0.0",
+  "description": "Mini Apróhirdető Frontend - Statikus webalkalmazás",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -c-1",
+    "dev": "npx http-server . -p 8080 -c-1 -o",
+    "build": "echo 'Statikus fájlok - nincs build folyamat szükséges'",
+    "deploy": "node deploy.js",
+    "test": "echo 'Tesztek később implementálhatók'",
+    "lint:html": "npx htmlhint *.html",
+    "lint:css": "npx stylelint *.css",
+    "lint": "npm run lint:html && npm run lint:css",
+    "serve": "npx http-server . -p 8080 -c-1 --cors"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "htmlhint": "^1.1.4",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0"
+  },
+  "keywords": [
+    "html",
+    "css",
+    "javascript",
+    "frontend",
+    "aprohirdeto"
+  ],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
