@@ -80,12 +80,18 @@ button:disabled {
     padding: 20px;
 }
 
+/* === EZ A RÉSZ A JAVÍTÁS === */
+
 .ad-card {
     border: 2px solid #d2b48c;
     border-radius: 8px;
     margin-bottom: 15px;
     padding: 15px;
-    overflow: hidden; /* Clearfix */
+    
+    /* Flexbox bekapcsolása a float helyett */
+    display: flex;
+    gap: 20px; /* Helyettesíti a margin-right-ot */
+    align-items: flex-start; /* A kép és a szöveg teteje igazodik */
 }
 
 .ad-image {
@@ -93,8 +99,13 @@ button:disabled {
     height: 200px;
     object-fit: cover;
     border-radius: 5px;
-    float: left;
-    margin-right: 20px;
+    
+    /* Nincs több float */
+    flex-shrink: 0; /* Ne zsugorodjon a kép */
+}
+
+.ad-content {
+    flex-grow: 1; /* A szöveg töltse ki a maradék helyet */
 }
 
 .ad-content h3 {
@@ -112,6 +123,9 @@ button:disabled {
     font-style: italic;
     color: #555;
 }
+
+/* === JAVÍTÁS VÉGE === */
+
 
 .message {
     padding: 10px;
