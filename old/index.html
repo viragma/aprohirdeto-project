@@ -2,145 +2,79 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-                    <div class="loading">🐄 Hirdetések töltődnek...</div>meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐷 Falusi Apróhirdető 🌾</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐖 Falusi Szar Piac 🌾</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🐷 Falusi Apróhirdető 🌾</h1>
-            <p class="subtitle">Itt minden eladó, amit a gazda nem eszik meg! 🐓🥕</p>
+            <h1>🐖 FALUSI PORTÉKA PIAC 🌾</h1>
+            <p class="subtitle">Itt minden holmi eladó, amit a gazda nem vitt haza! 🐓🥕</p>
         </header>
 
         <div class="form-section">
-            <h2>� Tedd fel a portékádat!</h2>
+            <h2>🐄 Tedd fel a portékádat, öregem!</h2>
             
-            <div id="error-message" class="error-message"></div>
-            <div id="success-message" class="success-message"></div>
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="success-message" class="success-message" style="display: none;"></div>
             
             <form id="ad-form" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="ad_title">🌾 Mit akarsz eladni? *</label>
+                    <label for="ad_title">🌾 Mifajta holmit akarsz eladni? *</label>
                     <input type="text" id="ad_title" name="ad_title" required 
-                           placeholder="pl. Jó kis tehén, friss tojás, régi szekér...">
+                           placeholder="pl. Régi bicikli, friss tojás, használt eke...">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="seller_name">🤠 Hogy hívnak téged? *</label>
+                        <label for="seller_name">🤠 Hogy szólíthatlak, öregem? *</label>
                         <input type="text" id="seller_name" name="seller_name" required 
-                               placeholder="A te neved">
+                               placeholder="Józsi bácsi, Pista komám, vagy hasonló">
                     </div>
                     <div class="form-group">
-                        <label for="price">💰 Mennyiért adod?</label>
+                        <label for="price">💰 Mennyiért adod ezt a holmit?</label>
                         <input type="text" id="price" name="price" 
-                               placeholder="pl. 50 000 forint">
+                               placeholder="5000 forint (ne legyél túl drága, komám!)">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email">📧 Email címed</label>
+                        <label for="email">📧 Elektronikus levelezésed (ha van olyan csudálatos)</label>
                         <input type="email" id="email" name="email" 
-                               placeholder="email@pelda.hu">
+                               placeholder="gazda@tanyasi.levelek.hu">
                     </div>
                     <div class="form-group">
-                        <label for="phone">📞 Telefonszámod</label>
+                        <label for="phone">📞 Telefonos elérhetőséged</label>
                         <input type="tel" id="phone" name="phone" 
                                placeholder="+36 30 123 4567">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="ad_text">📝 Mesélj róla bővebben!</label>
+                    <label for="ad_text">📝 Ecsetelj nekünk róla bővebben!</label>
                     <textarea id="ad_text" name="ad_text" 
-                              placeholder="Írd le, milyen állapotban van, mit tud, mióta van nálad..."></textarea>
+                              placeholder="Mesélj el mindent: mióta van nálad, hogy bánsz vele, milyen jót tesz, stb..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="image">📷 Készíts róla képet!</label>
+                    <label for="image">📷 Készíts róla egy díszes fényképet!</label>
                     <input type="file" id="image" name="image" accept="image/*">
-                    <small>Maximum 5MB méretű lehet</small>
+                    <small>Maximum 5MB lehet a fénykép</small>
                 </div>
 
                 <button type="submit" id="submit-btn">
-                    � Fel a portékával!
+                    🐖 Fel a portékával!
                 </button>
             </form>
         </div>
 
         <div class="gallery-section">
-            <h2>🏪 Keresgéljük, mit árulnak!</h2>
+            <h2>🏪 Lássuk, mifajta portékát kínálnak a tanyasiak!</h2>
             <div id="gallery">
-                <div class="loading">� Hirdetések töltődnek...</div>
+                <div class="loading">🐄 Betöltjük a holmikat...</div>
             </div>
-        </div>
-    </div>
-
-    <!-- Szerkesztő Modal -->
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">✏️ Átírjuk a hirdetésed</h3>
-                <button class="close-btn" onclick="closeEditModal()">&times;</button>
-            </div>
-            
-            <div id="edit-error-message" class="error-message"></div>
-            <div id="edit-success-message" class="success-message"></div>
-            
-            <form id="edit-form" enctype="multipart/form-data">
-                <input type="hidden" id="edit-ad-id" name="ad_id">
-                
-                <div class="form-group">
-                    <label for="edit-ad_title">🌾 Mit akarsz eladni? *</label>
-                    <input type="text" id="edit-ad_title" name="ad_title" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="edit-seller_name">🤠 Hogy hívnak téged? *</label>
-                        <input type="text" id="edit-seller_name" name="seller_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-price">💰 Mennyiért adod?</label>
-                        <input type="text" id="edit-price" name="price">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="edit-email">📧 Email címed</label>
-                        <input type="email" id="edit-email" name="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-phone">📞 Telefonszámod</label>
-                        <input type="tel" id="edit-phone" name="phone">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit-ad_text">📝 Mesélj róla bővebben!</label>
-                    <textarea id="edit-ad_text" name="ad_text"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit-image">📷 Új kép feltöltése (ha akarod)</label>
-                    <input type="file" id="edit-image" name="image" accept="image/*">
-                    <small style="color: #666; font-size: 0.9rem;">Ha nem töltesz fel újat, a régi megmarad.</small>
-                </div>
-
-                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                    <button type="button" onclick="closeEditModal()" 
-                            style="background-color: #8b4513; color: white; padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-family: Georgia, serif;">
-                        ❌ Mégse
-                    </button>
-                    <button type="submit" id="edit-submit-btn" class="btn-small" 
-                            style="background: linear-gradient(135deg, #228b22 0%, #32cd32 100%); color: white; padding: 12px 24px; font-size: 1rem; border-radius: 10px; font-family: Georgia, serif;">
-                        💾 Elmentem
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 

@@ -4,227 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐄 Falusi Portéka Piac 🌾</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <style>
-        body {
-            background-color: #f5f1e8;
-            font-family: Georgia, serif;
-            padding: 20px;
-        }
-        
-        .header-box {
-            background: linear-gradient(135deg, #8b4513, #a0522d);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-            border: 4px solid #654321;
-        }
-        
-        .ad-box {
-            background: white;
-            border: 3px solid #8b4513;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .ad-image {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .btn-falusi {
-            background: #228b22;
-            color: white;
-            border: 3px solid #006400;
-            font-weight: bold;
-            padding: 12px 25px;
-        }
-        
-        .btn-falusi:hover {
-            background: #32cd32;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
     <div class="container">
-        <div class="header-box">
+        <header class="header-box">
             <h1>🐄 FALUSI PORTÉKA PIAC 🌾</h1>
-            <p class="lead">Itt minden holmi eladó, amit a gazda nem vitt haza!</p>
-        </div>
+            <p>Itt minden holmi eladó, amit a gazda nem vitt haza!</p>
+        </header>
 
-        <div class="ad-box">
-            <h3>🐖 Tedd fel a portékádat!</h3>
-            <form id="adForm">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">🌾 Mit akarsz eladni? *</label>
-                        <input type="text" class="form-control" name="ad_title" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">🤠 A te neved? *</label>
-                        <input type="text" class="form-control" name="seller_name" required>
-                    </div>
+        <div class="form-box">
+            <h2>🐖 Tedd fel a portékádat!</h2>
+            <form id="ad-form">
+                <div class="form-group">
+                    <label for="ad_title">Mit akarsz eladni? *</label>
+                    <input type="text" id="ad_title" name="ad_title" required>
                 </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">💰 Mennyiért?</label>
-                        <input type="text" class="form-control" name="price" placeholder="pl. 5000 Ft">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">📞 Telefonszám</label>
-                        <input type="tel" class="form-control" name="phone">
-                    </div>
+                <div class="form-group">
+                    <label for="seller_name">A te neved? *</label>
+                    <input type="text" id="seller_name" name="seller_name" required>
                 </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">📝 Mesélj róla!</label>
-                    <textarea class="form-control" name="ad_text" rows="3"></textarea>
+                <div class="form-group">
+                    <label for="price">Mennyiért?</label>
+                    <input type="text" id="price" name="price">
                 </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">📷 Kép feltöltése</label>
-                    <input type="file" class="form-control" name="image" accept="image/*">
+                <div class="form-group">
+                    <label for="image">Kép feltöltése</label>
+                    <input type="file" id="image" name="image" accept="image/*">
                 </div>
-                
-                <button type="submit" class="btn btn-falusi">🐖 Fel a portékával!</button>
+                <div id="message-area" class="message" style="display:none;"></div>
+                <button type="submit" id="submit-button">🐖 Fel a portékával!</button>
             </form>
-            
-            <div id="message" class="mt-3"></div>
         </div>
 
-        <div class="ad-box">
-            <h3>🏪 Lássuk, mit árulnak a tanyasiak!</h3>
-            <div id="adsList">
-                <p class="text-center">🐄 Betöltés...</p>
+        <div class="list-box">
+            <h2>🏪 Lássuk, mit árulnak!</h2>
+            <div id="ads-list">
+                <p class="loading-text">🐄 Betöltés...</p>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Az eredeti API URL-t használjuk, mivel az UI és az API külön szerveren van.
-        const API_URL = 'http://beadando-lb-555305300.eu-central-1.elb.amazonaws.com/api/ads';
-        
-        // Az S3 bucket URL-je, ahol a képek tárolódnak.
-        const S3_BUCKET_URL = 'https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/';
-        
-        // Hirdetések betöltése
-        async function loadAds() {
-            const adsList = document.getElementById('adsList');
-            
-            try {
-                const response = await fetch(API_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`Nem sikerült betölteni a portékát! (Státusz: ${response.status})`);
-                }
-                
-                const ads = await response.json();
-                
-                // Ez a rész okozza a "villanást", amikor az adatbázis üres
-                if (!ads || ads.length === 0) {
-                    adsList.innerHTML = '<p class="text-center">🌾 Még nincs hirdetés!</p>';
-                    return;
-                }
-                
-                adsList.innerHTML = '';
-                
-                ads.forEach(ad => {
-                    const div = document.createElement('div');
-                    div.className = 'card mb-3';
-                    div.style.border = '2px solid #8b4513';
-                    
-                    let html = '<div class="card-body">';
-                    
-                    // === KÉP MEGJELENÍTÉS JAVÍTÁSA ===
-                    // Az API 'thumbnail_url' vagy 'image_url' kulcsot küld.
-                    // Ezt használjuk, és elé illesztjük az S3 bucket címét.
-                    
-                    // Először a thumbnailt próbáljuk, ha nincs, akkor a teljes képet
-                    let imageKey = ad.thumbnail_url || ad.image_url;
-                    
-                    if (imageKey) {
-                        const fullImageUrl = S3_BUCKET_URL + imageKey;
-                        html += `<img src="${fullImageUrl}" class="ad-image" alt="${ad.ad_title || 'Kép'}">`;
-                    }
-                    // === JAVÍTÁS VÉGE ===
-                    
-                    // Tartalom
-                    html += `
-                        <h5 class="card-title">🌾 ${ad.ad_title || 'Névtelen'}</h5>
-                        ${ad.price ? `<p class="text-success fw-bold">💰 ${ad.price}</p>` : ''}
-                        <p><strong>🤠 Eladó:</strong> ${ad.seller_name || 'Ismeretlen'}</p>
-                        ${ad.ad_text ? `<p>${ad.ad_text}</p>` : ''}
-                        ${ad.phone ? `<p><strong>📞</strong> ${ad.phone}</p>` : ''}
-                        ${ad.email ? `<p><strong>📧</strong> ${ad.email}</p>` : ''}
-                    `;
-                    
-                    html += '</div>';
-                    div.innerHTML = html;
-                    adsList.appendChild(div);
-                });
-                
-            } catch (error) {
-                console.error('Hiba a hirdetések betöltésekor:', error);
-                adsList.innerHTML = `<p class="text-danger text-center">Hiba: ${error.message}</p>`;
-            }
-        }
-        
-        // Űrlap kezelés
-        document.getElementById('adForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const message = document.getElementById('message');
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = '⏳ Feltöltés...';
-                
-                const formData = new FormData(e.target);
-                
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Ismeretlen hiba' }));
-                    throw new Error(errorData.message || `Hiba történt! (Státusz: ${response.status})`);
-                }
-                
-                message.innerHTML = '<div class="alert alert-success">✅ Sikeresen feladva!</div>';
-                e.target.reset();
-                
-                // Újratöltjük a hirdetéseket (most már meg fog jelenni az új)
-                loadAds();
-                
-                setTimeout(() => {
-                    message.innerHTML = '';
-                }, 3000);
-                
-            } catch (error) {
-                console.error('Hiba a hirdetés feladásakor:', error);
-                message.innerHTML = `<div class="alert alert-danger">❌ ${error.message}</div>`;
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🐖 Fel a portékával!';
-            }
-        });
-        
-        // Betöltés indítása
-        loadAds();
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>

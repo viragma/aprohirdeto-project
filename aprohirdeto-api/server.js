@@ -84,7 +84,40 @@ app.get('/api/ads', async (req, res) => {
             'SELECT id, ad_title, price, seller_name, image_url, thumbnail_url FROM advertisements ORDER BY created_at DESC'
         );
         
-        res.status(200).json(rows);
+            // Presigned URL generálás minden image_url-hez
+            const signedAds = await Promise.all(rows.map(async ad => {
+                if (ad.image_url) {
+                    try {
+                        const url = s3.getSignedUrl('getObject', {
+                            Bucket: 'beadando-kepek-w4pp9o',
+                            Key: ad.image_url,
+                            Expires: 60 * 60 // 1 óra
+                        });
+                        ad.image_presigned_url = url;
+                    } catch (err) {
+                        ad.image_presigned_url = null;
+                    }
+                } else {
+                    ad.image_presigned_url = null;
+                }
+                // Thumbnail presigned URL (ha van)
+                if (ad.thumbnail_url) {
+                    try {
+                        const thumbUrl = s3.getSignedUrl('getObject', {
+                            Bucket: 'beadando-kepek-w4pp9o',
+                            Key: ad.thumbnail_url,
+                            Expires: 60 * 60
+                        });
+                        ad.thumbnail_presigned_url = thumbUrl;
+                    } catch (err) {
+                        ad.thumbnail_presigned_url = null;
+                    }
+                } else {
+                    ad.thumbnail_presigned_url = null;
+                }
+                return ad;
+            }));
+            res.status(200).json(signedAds);
     } catch (error) {
         console.error('Hirdetések lekérdezési hiba:', error);
         res.status(500).json({ 
