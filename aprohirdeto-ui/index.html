@@ -113,18 +113,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // === JAVÍTÁS ITT ===
-        // A beégetett URL helyett relatív útvonalat használunk.
-        // Ezt az Nginx (nginx.conf) elkapja és továbbítja az API-nak.
-        const API_URL = '/api/ads';
-        // === JAVÍTÁS VÉGE ===
+        // Az eredeti API URL-t használjuk, mivel az UI és az API külön szerveren van.
+        const API_URL = 'http://beadando-lb-555305300.eu-central-1.elb.amazonaws.com/api/ads';
+        
+        // Az S3 bucket URL-je, ahol a képek tárolódnak.
+        const S3_BUCKET_URL = 'https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/';
         
         // Hirdetések betöltése
         async function loadAds() {
             const adsList = document.getElementById('adsList');
             
             try {
-                // Az API_URL már tartalmazza a /api/ads útvonalat
                 const response = await fetch(API_URL);
                 
                 if (!response.ok) {
@@ -133,6 +132,7 @@
                 
                 const ads = await response.json();
                 
+                // Ez a rész okozza a "villanást", amikor az adatbázis üres
                 if (!ads || ads.length === 0) {
                     adsList.innerHTML = '<p class="text-center">🌾 Még nincs hirdetés!</p>';
                     return;
@@ -147,17 +147,18 @@
                     
                     let html = '<div class="card-body">';
                     
-                    // Kép (presigned URL vagy thumbnail_url)
-                    // Megjegyzés: A jelenlegi API ('server.js') 'thumbnail_url'-t ad vissza,
-                    // 'image_presigned_url'-t nem. Frissítve erre.
-                    // Az S3 URL-t is hozzá kell adnunk, mivel a Lambda csak a kulcsot menti.
-                    const s3BucketBaseUrl = 'https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/';
+                    // === KÉP MEGJELENÍTÉS JAVÍTÁSA ===
+                    // Az API 'thumbnail_url' vagy 'image_url' kulcsot küld.
+                    // Ezt használjuk, és elé illesztjük az S3 bucket címét.
                     
-                    let imageUrl = ad.thumbnail_url ? (s3BucketBaseUrl + ad.thumbnail_url) : (ad.image_url ? (s3BucketBaseUrl + ad.image_url) : null);
-
-                    if (imageUrl) {
-                        html += `<img src="${imageUrl}" class="ad-image" alt="${ad.ad_title || 'Kép'}">`;
+                    // Először a thumbnailt próbáljuk, ha nincs, akkor a teljes képet
+                    let imageKey = ad.thumbnail_url || ad.image_url;
+                    
+                    if (imageKey) {
+                        const fullImageUrl = S3_BUCKET_URL + imageKey;
+                        html += `<img src="${fullImageUrl}" class="ad-image" alt="${ad.ad_title || 'Kép'}">`;
                     }
+                    // === JAVÍTÁS VÉGE ===
                     
                     // Tartalom
                     html += `
@@ -193,25 +194,25 @@
                 
                 const formData = new FormData(e.target);
                 
-                const response = await fetch(API_URL, { // Az API_URL már '/api/ads'
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     body: formData
                 });
                 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
+                    const errorData = await response.json().catch(() => ({ message: 'Ismeretlen hiba' }));
                     throw new Error(errorData.message || `Hiba történt! (Státusz: ${response.status})`);
                 }
                 
                 message.innerHTML = '<div class="alert alert-success">✅ Sikeresen feladva!</div>';
                 e.target.reset();
                 
-                // Újratöltjük a hirdetéseket
+                // Újratöltjük a hirdetéseket (most már meg fog jelenni az új)
                 loadAds();
                 
                 setTimeout(() => {
                     message.innerHTML = '';
-                }, 3000); // Kicsit több idő
+                }, 3000);
                 
             } catch (error) {
                 console.error('Hiba a hirdetés feladásakor:', error);
