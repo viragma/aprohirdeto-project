@@ -142,12 +142,9 @@
                     
                     let html = '<div class="card-body">';
                     
-                    // Kép
-                    if (ad.image_url) {
-                        const imgUrl = ad.image_url.startsWith('http') 
-                            ? ad.image_url 
-                            : `https://beadando-kepek-w4pp9o.s3.eu-central-1.amazonaws.com/${ad.image_url}`;
-                        html += `<img src="${imgUrl}" class="ad-image" alt="Kép">`;
+                    // Kép (presigned URL)
+                    if (ad.image_presigned_url) {
+                        html += `<img src="${ad.image_presigned_url}" class="ad-image" alt="Kép">`;
                     }
                     
                     // Tartalom
